@@ -99,15 +99,28 @@ public class ClientController implements UpdateCellsCallback, ShipPlacementListe
         }
     }
 
-    public void putShip4(){board.selectCells(4);}
-    public void putShip3(){board.selectCells(3);}
-    public void putShip2(){board.selectCells(2);}
-    public void putShip1(){board.selectCells(1);}
+    public void putShip4(){
+        board.setPlacementLocked(false);
+        board.selectCells(4);
+    }
+    public void putShip3(){
+        board.setPlacementLocked(false);
+        board.selectCells(3);
+    }
+    public void putShip2(){
+        board.setPlacementLocked(false);
+        board.selectCells(2);
+    }
+    public void putShip1(){
+        board.setPlacementLocked(false);
+        board.selectCells(1);
+    }
 
     public void resetBoard(){
         setNumberOfShips();
 
         board = new Board();
+        board.setShipPlacementListener(this);
         drawBoard();
     }
 

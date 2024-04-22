@@ -15,6 +15,7 @@ public class Board {
     private ArrayList<ArrayList<Cell>> boardArr;
     //if false - direction is down, otherwise right
     private boolean selectDirection = false;
+    private boolean placementLocked = false;
     private ShipPlacementListener listener;
 
     Board(){
@@ -65,15 +66,16 @@ public class Board {
             });
 
             cell.getRectangle().setOnMouseClicked(event->{
+                if(isPlacementLocked()) return;
                 if (putShip(numberOfCells, cell)) {
                     if (listener != null) {
                         listener.onShipPlaced(true, numberOfCells);
                     }
+                    boardArr.stream().flatMap(ArrayList::stream).forEach(finalCell -> {
+                        finalCell.getRectangle().setOnMouseEntered(null);
+                        finalCell.getRectangle().setOnScroll(null);
+                    });
                 }
-
-                boardArr.stream().flatMap(ArrayList::stream).forEach(finalCell -> {
-                    finalCell.getRectangle().setOnMouseEntered(null);
-                });
             });
         });
 
@@ -122,6 +124,7 @@ public class Board {
                 cellToUpdate.setShip(true);
                 cellToUpdate.getRectangle().setFill(Color.YELLOW);
             });
+            setPlacementLocked(true);
             return true;
         }
         return false;
@@ -219,5 +222,6 @@ public class Board {
     public void setShipPlacementListener(ShipPlacementListener listener) {
         this.listener = listener;
     }
-
+    public boolean isPlacementLocked() {return placementLocked;}
+    public void setPlacementLocked(boolean placementLocked) {this.placementLocked = placementLocked;}
 }
