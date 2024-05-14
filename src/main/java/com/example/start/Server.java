@@ -1,13 +1,10 @@
 package com.example.start;
 
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Server extends ServerController{
     private ServerSocket serverSocket;
@@ -15,22 +12,44 @@ public class Server extends ServerController{
     private BufferedReader bufferedReader;
     private BufferedWriter bufferedWriter;
     private LabelUpdateCallback callback;
+    private boolean roomAvailable;
+    private final Lock lock = new ReentrantLock();
 
     public Server(ServerSocket serverSocket, LabelUpdateCallback callback) {
         this.serverSocket = serverSocket;
         this.callback = callback;
+        this.roomAvailable = true;
         new Thread(new Runnable() {
             @Override
             public void run() {
-                try{
-                    socket = serverSocket.accept(); //halt until client connects, and return socket that enables conection
-                    callback.updateLabel("Player Connected");
-                    bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                    bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-                } catch (IOException e){
-                    System.out.println("Error creating client!");
-                    e.printStackTrace();
-                    closeEverything(socket, bufferedWriter, bufferedReader);
+                while(true) {
+                    try {
+                        //halt until client connects, and return socket that enables conection
+                        socket = serverSocket.accept();
+                        lock.lock();
+                        if (roomAvailable) {
+                            callback.updateLabel("Player Connected");
+                            bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                            bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+                            bufferedWriter.write("Server is open");
+                            bufferedWriter.newLine();
+                            bufferedWriter.flush();
+                            roomAvailable = false;
+                        } else {
+                            BufferedWriter delegator = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+                            delegator.write("Server is full");
+                            delegator.newLine();
+                            delegator.flush();
+                            delegator.close();
+                        }
+
+                    } catch (IOException e) {
+                        System.out.println("Error creating client!");
+                        e.printStackTrace();
+                        closeEverything(socket, bufferedWriter, bufferedReader);
+                    } finally {
+                        lock.unlock();
+                    }
                 }
             }
         }).start();

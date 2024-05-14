@@ -1,8 +1,8 @@
 package com.example.start;
 
 import java.io.*;
-import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.concurrent.*;
 
 public class Client {
     private Socket socket;
@@ -11,13 +11,11 @@ public class Client {
     private String cellsPlacement;
     private UpdateCellsCallback callback;
 
-    public Client(Socket socket, UpdateCellsCallback updateCellsCallback){
+    public Client(Socket socket){
         try{
-            this.callback = updateCellsCallback;
             this.socket = socket;
             this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            receiveMessageFromServer();
         } catch (IOException e){
             System.out.println("Error creating server!");
             e.printStackTrace();
@@ -45,6 +43,7 @@ public class Client {
                 String prev ="";
                 while(socket.isConnected()){
                     try{
+
                         cellsPlacement = bufferedReader.readLine();
                         if(!prev.equals(cellsPlacement)){
                             callback.updateCells(cellsPlacement);
@@ -55,8 +54,51 @@ public class Client {
                     }
 
                 }
+                closeEverything(socket, bufferedWriter, bufferedReader);
             }
         }).start();
+    }
+
+    public boolean tryToConnect(){
+
+        //System.out.println("Trying to connect to server");
+
+        Callable<Boolean> thread = new Callable<>(){
+
+            @Override
+            public Boolean call() throws Exception {
+                while(socket.isConnected()){
+                    String msg = null;
+                    try {
+                        msg = bufferedReader.readLine();
+                        if(msg.equals("Server is full")){
+                            System.out.println("Server is full!!!!!");
+                            closeEverything(socket, bufferedWriter, bufferedReader);
+                            return false;
+                        } else break;
+
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                }
+                return true;
+            }
+        };
+
+
+        FutureTask<Boolean> result = new FutureTask<>(thread);
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.submit(result);
+        executor.shutdown();
+
+        try {
+            if(result.get()) receiveMessageFromServer();{}
+            return result.get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void closeEverything(Socket socket, BufferedWriter bufferedWriter, BufferedReader bufferedReader){
@@ -75,4 +117,7 @@ public class Client {
         }
     }
 
+    public void setCallback(UpdateCellsCallback callback) {
+        this.callback = callback;
+    }
 }

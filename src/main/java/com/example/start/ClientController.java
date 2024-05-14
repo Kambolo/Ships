@@ -43,14 +43,10 @@ public class ClientController implements UpdateCellsCallback, ShipPlacementListe
     private Button confirmButton;
 
     @FXML
-    public void initialize(int portNr){
-        try{
-            this.portNr = portNr;
-            client = new Client(new Socket("localhost", this.portNr), this);
-        }catch(IOException e){
-            e.printStackTrace();
-            System.out.println("Error while creating client");
-        }
+    public void initialize(int portNr, Client client){
+        this.portNr = portNr;
+        this.client = client;
+        client.setCallback(this);
         setNumberOfShips();
 
         add4.disableProperty().bind(numberOf4.lessThanOrEqualTo(0));
