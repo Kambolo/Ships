@@ -4,15 +4,23 @@ import javafx.application.Platform;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
 
 public class ServerController implements LabelUpdateCallback{
     @FXML
@@ -22,22 +30,24 @@ public class ServerController implements LabelUpdateCallback{
     private Board board;
     private Server server;
     private int portNr;
+    private Parent root;
+    private Stage stage;
+    private Scene scene;
 
 
     @FXML
-    public void initialize(int portNr){
+    public void initialize(int portNr, Stage stage){
         try{
             this.portNr = portNr;
+            this.stage = stage;
             server = new Server(new ServerSocket(this.portNr), this);
             clientConnectionStatus.setText("Waiting\nfor player");
+
 
         }catch (IOException e){
             e.printStackTrace();
             System.out.println("Error while creating server");
         }
-
-        board = new Board();
-        drawBoard();
     }
 
     public void drawBoard(){
@@ -51,6 +61,22 @@ public class ServerController implements LabelUpdateCallback{
     @Override
     public void updateLabel(String newText) {
         Platform.runLater(() -> clientConnectionStatus.setText(newText));
+
+        Platform.runLater(() -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("shipsSelect.fxml"));
+                root = loader.load();
+
+                ShipsSelectController shipsSelectController = loader.getController();
+                shipsSelectController.initialize(portNr, null, server);
+
+                scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     public void sendCellPlacement(ActionEvent evt){
@@ -68,4 +94,5 @@ public class ServerController implements LabelUpdateCallback{
         }
         server.sendMessageToClient(messageToSend);
     }
+
 }

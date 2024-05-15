@@ -28,18 +28,18 @@ public class JoinController {
 
         Client client = new Client(new Socket("localhost", Integer.parseInt(port.getText())));
         if(client.tryToConnect()) {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("client.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("shipsSelect.fxml"));
             root = loader.load();
 
-            ClientController clientController = loader.getController();
-            clientController.initialize(Integer.valueOf(port.getText()), client);
+            ShipsSelectController shipsSelectController = loader.getController();
+            shipsSelectController.initialize(Integer.valueOf(port.getText()), client, null);
 
             scene = new Scene(root);
             stage = (Stage) ((Node) evt.getSource()).getScene().getWindow();
             stage.setResizable(false);
             stage.setScene(scene);
             stage.show();
-        } else{
+        } else {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("startView.fxml"));
             root = loader.load();
 

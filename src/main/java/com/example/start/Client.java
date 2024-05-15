@@ -37,26 +37,26 @@ public class Client {
 
     //making a recevieve message func in thread because we dont want the program to stop while waiting for message
     public void receiveMessageFromServer(){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String prev ="";
-                while(socket.isConnected()){
-                    try{
-
-                        cellsPlacement = bufferedReader.readLine();
-                        if(!prev.equals(cellsPlacement)){
-                            callback.updateCells(cellsPlacement);
-                        }
-                    } catch (IOException e){
-                        System.out.println("Error receiving a message!");
-                        e.printStackTrace();
-                    }
-
-                }
-                closeEverything(socket, bufferedWriter, bufferedReader);
-            }
-        }).start();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                String prev ="";
+//                while(socket.isConnected()){
+//                    try{
+//
+//                        cellsPlacement = bufferedReader.readLine();
+//                        if(!prev.equals(cellsPlacement)){
+//                            callback.updateCells(cellsPlacement);
+//                        }
+//                    } catch (IOException e){
+//                        System.out.println("Error receiving a message!");
+//                        e.printStackTrace();
+//                    }
+//
+//                }
+//                closeEverything(socket, bufferedWriter, bufferedReader);
+//            }
+//        }).start();
     }
 
     public boolean tryToConnect(){

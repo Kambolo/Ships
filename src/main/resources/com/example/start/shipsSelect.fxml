@@ -5,13 +5,13 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.start.ClientController">
+<Pane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.start.ShipsSelectController">
    <children>
       <Button fx:id="add4" layoutX="519.0" layoutY="108.0" mnemonicParsing="false" onAction="#putShip4" text="Dodaj 4" />
       <Button fx:id="add3" layoutX="519.0" layoutY="150.0" mnemonicParsing="false" onAction="#putShip3" text="Dodaj 3" />
       <Button fx:id="add2" layoutX="519.0" layoutY="188.0" mnemonicParsing="false" onAction="#putShip2" text="Dodaj 2" />
       <Button fx:id="add1" layoutX="519.0" layoutY="228.0" mnemonicParsing="false" onAction="#putShip1" text="Dodaj 1" />
-      <Button fx:id="confirmButton" layoutX="497.0" layoutY="286.0" mnemonicParsing="false" text="Zatwierdź" />
+      <Button fx:id="confirmButton" layoutX="497.0" layoutY="286.0" mnemonicParsing="false" onAction="#startGame" text="Zatwierdź" />
       <Label fx:id="numberOf4Label" layoutX="408.0" layoutY="112.0" text="Label">
          <padding>
             <Insets right="15.0" />

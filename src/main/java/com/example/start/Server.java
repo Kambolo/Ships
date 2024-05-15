@@ -6,31 +6,34 @@ import java.net.Socket;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class Server extends ServerController{
+public class Server{
     private ServerSocket serverSocket;
     private Socket socket;
     private BufferedReader bufferedReader;
     private BufferedWriter bufferedWriter;
     private LabelUpdateCallback callback;
     private boolean roomAvailable;
+    private boolean gameStatus;
     private final Lock lock = new ReentrantLock();
 
     public Server(ServerSocket serverSocket, LabelUpdateCallback callback) {
         this.serverSocket = serverSocket;
         this.callback = callback;
         this.roomAvailable = true;
+        this.gameStatus = true;
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while(true) {
+                while(gameStatus) {
                     try {
                         //halt until client connects, and return socket that enables conection
                         socket = serverSocket.accept();
                         lock.lock();
-                        if (roomAvailable) {
+                        if (isRoomAvailable()) {
                             callback.updateLabel("Player Connected");
                             bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                             bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+
                             bufferedWriter.write("Server is open");
                             bufferedWriter.newLine();
                             bufferedWriter.flush();
@@ -104,5 +107,9 @@ public class Server extends ServerController{
         }catch (IOException e){
             e.printStackTrace();
         }
+    }
+
+    public boolean isRoomAvailable() {
+        return roomAvailable;
     }
 }

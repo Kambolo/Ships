@@ -29,13 +29,13 @@ public class CreateController {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("server.fxml"));
         root = loader.load();
 
-        ServerController serverController = loader.getController();
-        serverController.initialize(Integer.valueOf(port.getText()));
 
         scene = new Scene(root);
         stage = (Stage) ((Node) evt.getSource()).getScene().getWindow();
         stage.setResizable(false);
         stage.setScene(scene);
+        ServerController serverController = loader.getController();
+        serverController.initialize(Integer.valueOf(port.getText()), stage);
         stage.show();
     }
 }
