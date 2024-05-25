@@ -17,9 +17,9 @@ public class Client {
             this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         } catch (IOException e){
-            System.out.println("Error creating server!");
+            System.out.println("Error joining server!");
             e.printStackTrace();
-            closeEverything(socket, bufferedWriter, bufferedReader);
+            closeEverything();
         }
     }
 
@@ -31,7 +31,7 @@ public class Client {
         } catch(IOException e){
             e.printStackTrace();
             System.out.println("Error while sending message");
-            closeEverything(socket, bufferedWriter, bufferedReader);
+            closeEverything();
         }
     }
 
@@ -73,7 +73,7 @@ public class Client {
                         msg = bufferedReader.readLine();
                         if(msg.equals("Server is full")){
                             System.out.println("Server is full!!!!!");
-                            closeEverything(socket, bufferedWriter, bufferedReader);
+                            closeEverything();
                             return false;
                         } else break;
 
@@ -94,14 +94,14 @@ public class Client {
         executor.shutdown();
 
         try {
-            if(result.get()) receiveMessageFromServer();{}
+            if(result.get()) receiveMessageFromServer();
             return result.get();
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void closeEverything(Socket socket, BufferedWriter bufferedWriter, BufferedReader bufferedReader){
+    public void closeEverything(){
         try{
             if(bufferedReader != null){
                 bufferedReader.close();

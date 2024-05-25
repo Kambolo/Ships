@@ -19,7 +19,12 @@ public class StartViewController {
     private Button playButton;
     @FXML
     protected void onButtonClicked(ActionEvent evt) throws IOException {
-        root = FXMLLoader.load(getClass().getResource("createOrJoin.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("createOrJoin.fxml"));
+        root = loader.load();
+
+        CreateOrJoinController controller = loader.getController();
+        controller.initialize("");
+
         scene = new Scene(root);
         stage = (Stage) ((Node) evt.getSource()).getScene().getWindow();
         stage.setResizable(false);

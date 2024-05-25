@@ -3,6 +3,7 @@ package com.example.start;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -45,18 +46,15 @@ public class Server{
                             delegator.flush();
                             delegator.close();
                         }
+                        lock.unlock();
 
                     } catch (IOException e) {
-                        System.out.println("Error creating client!");
-                        e.printStackTrace();
-                        closeEverything(socket, bufferedWriter, bufferedReader);
-                    } finally {
-                        lock.unlock();
+                        //e.printStackTrace();
+                        closeEverything();
                     }
                 }
             }
         }).start();
-
 
     }
 
@@ -69,7 +67,7 @@ public class Server{
             } catch(IOException e){
                 e.printStackTrace();
                 System.out.println("Error while sending message");
-                closeEverything(socket, bufferedWriter, bufferedReader);
+                closeEverything();
             }
         }
     }
@@ -93,7 +91,10 @@ public class Server{
         }).start();
     }
 
-    public void closeEverything(Socket socket, BufferedWriter bufferedWriter, BufferedReader bufferedReader){
+    public void closeEverything(){
+        //System.out.println("Closing Everything");
+        gameStatus = false;
+
         try{
             if(bufferedReader != null){
                 bufferedReader.close();
@@ -103,6 +104,9 @@ public class Server{
             }
             if(socket != null){
                 socket.close();
+            }
+            if(serverSocket != null){
+                serverSocket.close();
             }
         }catch (IOException e){
             e.printStackTrace();

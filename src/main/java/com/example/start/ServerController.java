@@ -36,18 +36,11 @@ public class ServerController implements LabelUpdateCallback{
 
 
     @FXML
-    public void initialize(int portNr, Stage stage){
-        try{
-            this.portNr = portNr;
-            this.stage = stage;
-            server = new Server(new ServerSocket(this.portNr), this);
-            clientConnectionStatus.setText("Waiting\nfor player");
-
-
-        }catch (IOException e){
-            e.printStackTrace();
-            System.out.println("Error while creating server");
-        }
+    public void initialize(int portNr, Stage stage, Server server){
+        this.portNr = portNr;
+        this.stage = stage;
+        this.server = server;
+        clientConnectionStatus.setText("Waiting\nfor opponent");
     }
 
     public void drawBoard(){

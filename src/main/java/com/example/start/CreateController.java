@@ -11,14 +11,13 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.ServerSocket;
 
 public class CreateController {
     @FXML
     private TextField port;
     @FXML
     private TextField ipAdd;
-    @FXML
-    private Button createButton;
 
     private Parent root;
     private Stage stage;
@@ -34,8 +33,12 @@ public class CreateController {
         stage = (Stage) ((Node) evt.getSource()).getScene().getWindow();
         stage.setResizable(false);
         stage.setScene(scene);
+
         ServerController serverController = loader.getController();
-        serverController.initialize(Integer.valueOf(port.getText()), stage);
+        Server server = new Server(new ServerSocket(Integer.valueOf(port.getText())), serverController);
+        serverController.initialize(Integer.valueOf(port.getText()), stage, server);
+
+        stage.setOnCloseRequest(e -> server.closeEverything());
         stage.show();
     }
 }
