@@ -154,7 +154,7 @@ public class ShipsSelectController implements ShipPlacementListener{
         root = loader.load();
 
         GameController gameController = loader.getController();
-        gameController.initialize(board);
+        gameController.initialize(board, client, server, pane);
 
         scene = new Scene(root);
         stage = (Stage) ((Node) evt.getSource()).getScene().getWindow();

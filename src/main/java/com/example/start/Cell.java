@@ -15,15 +15,6 @@ public class Cell {
         this.setRectangle(rectangle);
         setPosition(new Pair<>(x, y));
         setShip(false);
-
-        //setting onMouseClicked to interact with rectangle
-        rectangle.setOnMouseClicked(event->{
-            if(event.getButton() == MouseButton.PRIMARY){
-                rectangle.setFill(Color.RED);
-                picked = true;
-            }
-        });
-
     }
 
 
@@ -33,17 +24,6 @@ public class Cell {
 
     public void setRectangle(Rectangle rectangle) {
         this.rectangle = rectangle;
-    }
-
-    public boolean isPicked() {
-        return picked;
-    }
-
-    public void setPicked(boolean picked) {
-        this.picked = picked;
-        if(this.picked){
-            rectangle.setFill(Color.RED);
-        }
     }
 
     public Pair<Integer, Integer> getPosition() {return position;}

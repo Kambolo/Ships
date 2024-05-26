@@ -42,7 +42,7 @@ public class JoinController {
                 stage.setOnCloseRequest(e -> client.closeEverything());
                 stage.show();
             } else {
-                backToMenu(evt, "Pokoj jest zajety");
+                backToMenu(evt, "Pokoj jest zajety!");
             }
         } catch (ConnectException e) {
             backToMenu(evt, "Pokoj nie istnieje!");

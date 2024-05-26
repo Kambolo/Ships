@@ -1,12 +1,9 @@
 package com.example.start;
 
 import javafx.application.Platform;
-import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -14,13 +11,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.ResourceBundle;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.FutureTask;
 
 public class ServerController implements LabelUpdateCallback{
     @FXML
@@ -70,22 +61,6 @@ public class ServerController implements LabelUpdateCallback{
                 e.printStackTrace();
             }
         });
-    }
-
-    public void sendCellPlacement(ActionEvent evt){
-        String messageToSend = "";
-        ArrayList<ArrayList<Cell>> arrayOfCells = board.getBoardArr();
-
-        for(int row =0; row<arrayOfCells.getFirst().size(); row++){
-            for(int col=0; col<arrayOfCells.size(); col++){
-                if(arrayOfCells.get(row).get(col).isPicked()){
-                    messageToSend += ""+row+""+col;
-                    messageToSend+=",";
-                }
-
-            }
-        }
-        server.sendMessageToClient(messageToSend);
     }
 
 }

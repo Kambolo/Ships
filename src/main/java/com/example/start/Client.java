@@ -4,18 +4,17 @@ import java.io.*;
 import java.net.Socket;
 import java.util.concurrent.*;
 
-public class Client {
+public class Client implements GameOperations{
     private Socket socket;
     private BufferedReader bufferedReader;
     private BufferedWriter bufferedWriter;
-    private String cellsPlacement;
     private UpdateCellsCallback callback;
 
-    public Client(Socket socket){
+    public Client(Socket socket) {
         try{
-            this.socket = socket;
-            this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            this.setSocket(socket);
+            this.setBufferedReader(new BufferedReader(new InputStreamReader(socket.getInputStream())));
+            this.setBufferedWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())));
         } catch (IOException e){
             System.out.println("Error joining server!");
             e.printStackTrace();
@@ -23,11 +22,11 @@ public class Client {
         }
     }
 
-    public void sendMessageToServer(String messageToServer){
+    public void sendMessage(String messageToServer){
         try{
-            bufferedWriter.write(messageToServer);
-            bufferedWriter.newLine(); //otherwise client would wait for more messages to come
-            bufferedWriter.flush(); //sending message even if it is not full
+            getBufferedWriter().write(messageToServer);
+            getBufferedWriter().newLine(); //otherwise client would wait for more messages to come
+            getBufferedWriter().flush(); //sending message even if it is not full
         } catch(IOException e){
             e.printStackTrace();
             System.out.println("Error while sending message");
@@ -36,28 +35,24 @@ public class Client {
     }
 
     //making a recevieve message func in thread because we dont want the program to stop while waiting for message
-    public void receiveMessageFromServer(){
+//    public void receiveMessage(){
 //        new Thread(new Runnable() {
 //            @Override
 //            public void run() {
-//                String prev ="";
-//                while(socket.isConnected()){
+//                String msg;
+//                while(getSocket().isConnected()){
 //                    try{
 //
-//                        cellsPlacement = bufferedReader.readLine();
-//                        if(!prev.equals(cellsPlacement)){
-//                            callback.updateCells(cellsPlacement);
-//                        }
 //                    } catch (IOException e){
 //                        System.out.println("Error receiving a message!");
 //                        e.printStackTrace();
 //                    }
 //
 //                }
-//                closeEverything(socket, bufferedWriter, bufferedReader);
+//                closeEverything();
 //            }
 //        }).start();
-    }
+//    }
 
     public boolean tryToConnect(){
 
@@ -67,10 +62,11 @@ public class Client {
 
             @Override
             public Boolean call() throws Exception {
-                while(socket.isConnected()){
-                    String msg = null;
+                String msg = null;
+
+                while(getSocket().isConnected()){
                     try {
-                        msg = bufferedReader.readLine();
+                        msg = getBufferedReader().readLine();
                         if(msg.equals("Server is full")){
                             System.out.println("Server is full!!!!!");
                             closeEverything();
@@ -86,7 +82,6 @@ public class Client {
             }
         };
 
-
         FutureTask<Boolean> result = new FutureTask<>(thread);
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -94,8 +89,7 @@ public class Client {
         executor.shutdown();
 
         try {
-            if(result.get()) receiveMessageFromServer();
-            return result.get();
+                return result.get();
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         }
@@ -103,14 +97,14 @@ public class Client {
 
     public void closeEverything(){
         try{
-            if(bufferedReader != null){
-                bufferedReader.close();
+            if(getBufferedReader() != null){
+                getBufferedReader().close();
             }
-            if(bufferedWriter != null){
-                bufferedWriter.close();
+            if(getBufferedWriter() != null){
+                getBufferedWriter().close();
             }
-            if(socket != null){
-                socket.close();
+            if(getSocket() != null){
+                getSocket().close();
             }
         }catch (IOException e){
             e.printStackTrace();
@@ -119,5 +113,29 @@ public class Client {
 
     public void setCallback(UpdateCellsCallback callback) {
         this.callback = callback;
+    }
+
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public void setSocket(Socket socket) {
+        this.socket = socket;
+    }
+
+    public BufferedReader getBufferedReader() {
+        return bufferedReader;
+    }
+
+    public void setBufferedReader(BufferedReader bufferedReader) {
+        this.bufferedReader = bufferedReader;
+    }
+
+    public BufferedWriter getBufferedWriter() {
+        return bufferedWriter;
+    }
+
+    public void setBufferedWriter(BufferedWriter bufferedWriter) {
+        this.bufferedWriter = bufferedWriter;
     }
 }
