@@ -20,5 +20,10 @@
             <Font size="18.0" />
          </font>
       </Label>
+      <Label fx:id="errorLabel" layoutX="214.0" layoutY="246.0" text="..." textFill="#9e0000">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

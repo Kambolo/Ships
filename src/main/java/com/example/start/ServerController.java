@@ -31,15 +31,7 @@ public class ServerController implements LabelUpdateCallback{
         this.portNr = portNr;
         this.stage = stage;
         this.server = server;
-        clientConnectionStatus.setText("Waiting\nfor opponent");
-    }
-
-    public void drawBoard(){
-        for(ArrayList<Cell> row: board.getBoardArr()){
-            for(Cell cell : row){
-                pane.getChildren().add(cell.getRectangle());
-            }
-        }
+        clientConnectionStatus.setText("Oczekiwanie na\nprzeciwnika");
     }
 
     @Override

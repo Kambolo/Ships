@@ -26,5 +26,10 @@
       </Label>
       <TextField fx:id="ipAdd" layoutX="103.0" layoutY="154.0" prefHeight="24.0" prefWidth="192.0" />
       <TextField fx:id="port" layoutX="103.0" layoutY="242.0" prefHeight="24.0" prefWidth="192.0" />
+      <Label fx:id="errorLabel" layoutX="185.0" layoutY="303.0" text="..." textFill="#b90000">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
    </children>
 </AnchorPane>

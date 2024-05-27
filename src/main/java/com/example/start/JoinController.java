@@ -6,7 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -17,10 +17,17 @@ import java.net.Socket;
 public class JoinController {
     @FXML
     private TextField port;
+    @FXML
+    private Label errorLabel;
 
     private Parent root;
     private Stage stage;
     private Scene scene;
+
+    @FXML
+    private void initialize() {
+        errorLabel.setVisible(false);
+    }
 
     @FXML
     public void onButtonClicked(ActionEvent evt) throws IOException {
@@ -46,6 +53,9 @@ public class JoinController {
             }
         } catch (ConnectException e) {
             backToMenu(evt, "Pokoj nie istnieje!");
+        } catch (NumberFormatException e){
+            errorLabel.setText("Niedozwolony numer portu!");
+            errorLabel.setVisible(true);
         }
     }
 

@@ -46,7 +46,6 @@ public class ShipsSelectController implements ShipPlacementListener{
     private IntegerProperty numberOf3 = new SimpleIntegerProperty();
     private IntegerProperty numberOf2 = new SimpleIntegerProperty();
     private IntegerProperty numberOf1 = new SimpleIntegerProperty();
-    private IntegerProperty disableConfirmButtonProperty = new SimpleIntegerProperty();
     @FXML
     private Button resetButton;
     @FXML
@@ -58,7 +57,6 @@ public class ShipsSelectController implements ShipPlacementListener{
         this.portNr = portNr;
         this.client = client;
         this.server = server;
-        //client.setCallback(this);
 
         setNumberOfShips();
 
@@ -154,10 +152,12 @@ public class ShipsSelectController implements ShipPlacementListener{
         root = loader.load();
 
         GameController gameController = loader.getController();
-        gameController.initialize(board, client, server, pane);
+        gameController.initialize(board, client, server);
 
         scene = new Scene(root);
         stage = (Stage) ((Node) evt.getSource()).getScene().getWindow();
+        stage.setWidth(1000);
+        stage.setHeight(600);
         stage.setResizable(false);
         stage.setScene(scene);
         stage.show();

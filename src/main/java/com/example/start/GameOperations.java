@@ -6,12 +6,12 @@ import java.net.Socket;
 import java.util.concurrent.*;
 
 public interface GameOperations {
-    public default boolean confirmGame(Socket socket, BufferedReader bufferedReader) throws IOException {
+    default boolean confirmGame(Socket socket, BufferedReader bufferedReader){
 
         Callable<Boolean> thread = new Callable<>() {
 
             @Override
-            public Boolean call() throws Exception {
+            public Boolean call(){
                 String msg = null;
                 while (socket.isConnected()) {
                     try {
