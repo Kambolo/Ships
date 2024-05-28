@@ -218,7 +218,9 @@ public class Board {
     public ArrayList<ArrayList<Cell>> getBoardArr(){
         return boardArr;
     }
-
+    public Cell getCell(int x, int y){
+        return boardArr.get(x).get(y);
+    }
     public void setShipPlacementListener(ShipPlacementListener listener) {
         this.listener = listener;
     }

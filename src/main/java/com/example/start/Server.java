@@ -84,28 +84,6 @@ public class Server implements GameOperations{
         }
     }
 
-    //making a recevieve message func in thread because we dont want the program to stop while waiting for message
-    public void receiveMessage(){
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String msg;
-                while(getSocket().isConnected()){
-                    try{
-                        msg = getBufferedReader().readLine();
-                        if(msg != null && msg.equals("ready") && !gameAccepted){
-                            gameAccepted = true;
-                        }
-                    } catch (IOException e){
-                        System.out.println("Error receiving a message!");
-                        e.printStackTrace();
-                    }
-
-                }
-            }
-        }).start();
-    }
-
     public void closeEverything(){
         //System.out.println("Closing Everything");
         gameStatus = false;

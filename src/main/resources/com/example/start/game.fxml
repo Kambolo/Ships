@@ -232,5 +232,6 @@
             <Font size="24.0" />
          </font>
       </Label>
+      <Label fx:id="playerTurn" alignment="CENTER" layoutX="920.0" layoutY="119.0" text="Label" textAlignment="CENTER" />
    </children>
 </AnchorPane>

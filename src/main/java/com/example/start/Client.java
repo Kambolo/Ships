@@ -34,26 +34,6 @@ public class Client implements GameOperations{
         }
     }
 
-    //making a recevieve message func in thread because we dont want the program to stop while waiting for message
-//    public void receiveMessage(){
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                String msg;
-//                while(getSocket().isConnected()){
-//                    try{
-//
-//                    } catch (IOException e){
-//                        System.out.println("Error receiving a message!");
-//                        e.printStackTrace();
-//                    }
-//
-//                }
-//                closeEverything();
-//            }
-//        }).start();
-//    }
-
     public boolean tryToConnect(){
 
         //System.out.println("Trying to connect to server");
