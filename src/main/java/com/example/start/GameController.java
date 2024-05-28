@@ -2,12 +2,19 @@ package com.example.start;
 
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 import javafx.util.Pair;
 
 import java.io.IOException;
@@ -15,11 +22,16 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 public class GameController {
+    private Parent root;
+    private Stage stage;
+    private Scene scene;
     private Board board;
     private Board opponentBoard;
     private Server server;
     private Client client;
     private boolean myTurn;
+    private int shipsRemaining;
+    private int opponetShipsRemaining;
     @FXML
     private Pane pane1;
     @FXML
@@ -36,6 +48,8 @@ public class GameController {
     private HBox metricX2;
     @FXML
     private Label playerTurn;
+    @FXML
+    private Button backToMenu;
 
     @FXML
     public void initialize(Board board, Client client, Server server) {
@@ -43,6 +57,10 @@ public class GameController {
         this.server = server;
         this.client = client;
         this.opponentBoard = new Board();
+        this.shipsRemaining = 20;
+        this.opponetShipsRemaining = 20;
+        this.backToMenu.setVisible(false);
+        this.backToMenu.setDisable(true);
 
         metricX1.setVisible(false);
         metricX2.setVisible(false);
@@ -127,21 +145,36 @@ public class GameController {
             System.out.println("Opponent returns information");
             if (task.getValue()) {
                 System.out.println("Opponent returned true");
+                myTurn = true;
+                opponetShipsRemaining--;
+                if(opponetShipsRemaining == 0){
+                    resetBoardInteraction(opponentBoard);
+                    Platform.runLater(()->{
+                        playerTurn.setText("Wygrana!");
+                        this.backToMenu.setVisible(true);
+                        this.backToMenu.setDisable(false);
+                        if(server != null){
+                            server.closeEverything();
+                        }
+                        if(client != null){
+                            client.closeEverything();
+                        }
+                    });
+                }
                 Platform.runLater(() -> {
                     opponentBoard.getCell(selectedCell.getValue(), selectedCell.getKey()).getRectangle().setFill(Color.RED);
                 });
             } else {
                 System.out.println("Opponent returned false");
+                myTurn = false;
                 Platform.runLater(() -> {
                     opponentBoard.getCell(selectedCell.getValue(), selectedCell.getKey()).getRectangle().setFill(Color.GRAY);
                 });
+                Platform.runLater(this::waitForOpponentMove);
+                resetBoardInteraction(opponentBoard);
+                playerTurn.setText("Ruch przeciwnika");
             }
-            myTurn = false;
-            resetBoardInteraction(opponentBoard);
-            playerTurn.setText("Ruch przeciwnika");
-            Platform.runLater(this::waitForOpponentMove);
         });
-
         new Thread(task).start();
     }
 
@@ -171,18 +204,40 @@ public class GameController {
             Pair<Integer, Integer> position = task.getValue();
             System.out.println("Received opponent shoot " + position);
             if (position != null) {
+                Pair<Integer, Integer> finalPosition = position;
                 Platform.runLater(() -> {
-                    var cell = board.getCell(position.getKey(), position.getValue());
+                    var cell = board.getCell(finalPosition.getKey(), finalPosition.getValue());
                     if (cell.isShip()) {
+                        shipsRemaining--;
                         cell.getRectangle().setFill(Color.RED);
+                        sendFeedback(cell.isShip());
+                        if(shipsRemaining == 0){
+                            resetBoardInteraction(opponentBoard);
+                            Platform.runLater(()->{
+                                playerTurn.setText("Przegrana!");
+                                this.backToMenu.setVisible(true);
+                                this.backToMenu.setDisable(false);
+                                if(server != null){
+                                    server.closeEverything();
+                                }
+                                if(client != null){
+                                    client.closeEverything();
+                                }
+                            });
+                        }
+                        waitForOpponentMove();
                     }
-                    sendFeedback(cell.isShip());
+                    else{
+                        myTurn = true;
+                        Platform.runLater(() -> {
+                            playerTurn.setText("Twój ruch");
+                            setupBoardInteraction(opponentBoard);
+                        });
+                        sendFeedback(cell.isShip());
+                    }
+
                 });
-                myTurn = true;
-                Platform.runLater(() -> {
-                    playerTurn.setText("Twój ruch");
-                    setupBoardInteraction(opponentBoard);
-                });
+
             }
         });
 
@@ -239,5 +294,20 @@ public class GameController {
                 pane.getChildren().add(cell.getRectangle());
             }
         }
+    }
+    public void backToMenu(ActionEvent evt) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("createOrJoin.fxml"));
+        root = loader.load();
+
+        CreateOrJoinController createOrJoinController = loader.getController();
+        createOrJoinController.initialize("");
+
+        scene = new Scene(root);
+        stage = (Stage) ((Node) evt.getSource()).getScene().getWindow();
+        stage.setWidth(600);
+        stage.setHeight(400);
+        stage.setResizable(false);
+        stage.setScene(scene);
+        stage.show();
     }
 }
