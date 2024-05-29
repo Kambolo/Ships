@@ -155,10 +155,12 @@ public class GameController {
                         this.backToMenu.setVisible(true);
                         this.backToMenu.setDisable(false);
                         if(server != null){
-                            DatabaseOperations.increaseScoreInDb("ships", "leaderboard");
+                            DatabaseOperations.increaseScoreInDb("ships", "leaderboard", Main.getUsername());
                             server.closeEverything();
                         }
                         if(client != null){
+                            //to get username from a client
+                            client.sendMessage("username:"+Main.getUsername());
                             client.closeEverything();
                         }
                     });
@@ -220,7 +222,7 @@ public class GameController {
                                 this.backToMenu.setVisible(true);
                                 this.backToMenu.setDisable(false);
                                 if(server != null){
-                                    DatabaseOperations.increaseScoreInDb("ships", "leaderboard");
+                                    DatabaseOperations.increaseScoreInDb("ships", "leaderboard", client.getUsername(client.getSocket(), client.getBufferedReader()));
                                     server.closeEverything();
                                 }
                                 if(client != null){

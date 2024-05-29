@@ -3,7 +3,7 @@ import java.sql.*;
 
 
 public class DatabaseOperations {
-    static String url = "jdbc:mysql://"+Server.getIpAddress()+"/";
+    static String url = "jdbc:mysql://localhost/";
     static final String USER = "root";
     static final String PASSWORD = "";
 
@@ -32,7 +32,7 @@ public class DatabaseOperations {
             }
         }
     }
-    static public void increaseScoreInDb(String dbName, String tableName) {
+    static public void increaseScoreInDb(String dbName, String tableName, String username) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -64,7 +64,7 @@ public class DatabaseOperations {
                             ");";
                     preparedStatement.executeUpdate(sql);
                 }
-                updateScore(Main.getUsername(), tableName, connection);
+                updateScore(username, tableName, connection);
             }
         } catch (SQLException | ClassNotFoundException ex) {
             System.out.println("Error while creating a table");
