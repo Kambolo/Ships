@@ -155,13 +155,12 @@ public class GameController {
                         this.backToMenu.setVisible(true);
                         this.backToMenu.setDisable(false);
                         if(server != null){
+                            DatabaseOperations.increaseScoreInDb("ships", "leaderboard");
                             server.closeEverything();
                         }
                         if(client != null){
                             client.closeEverything();
                         }
-
-                        DatabaseOperations.increaseScoreInDb("ships", "leaderboard");
                     });
                 }
                 Platform.runLater(() -> {
@@ -221,6 +220,7 @@ public class GameController {
                                 this.backToMenu.setVisible(true);
                                 this.backToMenu.setDisable(false);
                                 if(server != null){
+                                    DatabaseOperations.increaseScoreInDb("ships", "leaderboard");
                                     server.closeEverything();
                                 }
                                 if(client != null){
