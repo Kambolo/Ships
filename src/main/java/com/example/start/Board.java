@@ -182,13 +182,11 @@ public class Board {
 
             if (row == 0){
                 if(boardArr.get(row + 1).get(col - 1).isShip() || boardArr.get(row + 1).get(col).isShip() || boardArr.get(row + 1).get(col + 1).isShip()) return false; //checking lower-left, down and lower-right of cell
-                if(boardArr.get(row).get(col - 1).isShip() || boardArr.get(row).get(col + 1).isShip()) return false; //checking left and right of cell
                 return true;
             }
 
             if(row == boardArr.size() - 1){
                 if(boardArr.get(row - 1).get(col - 1).isShip() || boardArr.get(row - 1).get(col).isShip() || boardArr.get(row - 1).get(col + 1).isShip()) return false; //checking upper-left, up and upper-right of cell
-                if(boardArr.get(row).get(col - 1).isShip() || boardArr.get(row).get(col + 1).isShip()) return false; //checking left and right of cell
                 return true;
             }
         }

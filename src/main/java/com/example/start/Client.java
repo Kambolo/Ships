@@ -8,6 +8,7 @@ public class Client implements GameOperations{
     private Socket socket;
     private BufferedReader bufferedReader;
     private BufferedWriter bufferedWriter;
+    private UpdateCellsCallback callback;
 
     public Client(Socket socket) {
         try{
@@ -88,6 +89,10 @@ public class Client implements GameOperations{
         }catch (IOException e){
             e.printStackTrace();
         }
+    }
+
+    public void setCallback(UpdateCellsCallback callback) {
+        this.callback = callback;
     }
 
     public Socket getSocket() {

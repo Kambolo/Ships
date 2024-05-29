@@ -16,6 +16,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import javafx.util.converter.DateTimeStringConverter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -159,6 +160,8 @@ public class GameController {
                         if(client != null){
                             client.closeEverything();
                         }
+
+                        DatabaseOperations.increaseScoreInDb("ships", "leaderboard");
                     });
                 }
                 Platform.runLater(() -> {
