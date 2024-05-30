@@ -33,6 +33,7 @@ public class GameController {
     private boolean myTurn;
     private int shipsRemaining;
     private int opponetShipsRemaining;
+    private int timeSeconds;
     private String clientUsername;
     @FXML
     private Pane pane1;
@@ -52,6 +53,8 @@ public class GameController {
     private Label playerTurn;
     @FXML
     private Button backToMenu;
+    @FXML
+    private Label timerLabel;
 
     @FXML
     public void initialize(Board board, Client client, Server server) {
@@ -63,6 +66,8 @@ public class GameController {
         this.opponetShipsRemaining = 20;
         this.backToMenu.setVisible(false);
         this.backToMenu.setDisable(true);
+        this.timerLabel.setText("");
+        timeSeconds = 30;
 
         metricX1.setVisible(false);
         metricX2.setVisible(false);
@@ -116,6 +121,8 @@ public class GameController {
             playerTurn.setText("Ruch\nprzeciwnika");
             waitForOpponentMove();
         }
+
+        timerCountDownThread();
     }
 
     private void setupBoardInteraction(Board board) {
@@ -154,6 +161,7 @@ public class GameController {
 
         task.setOnSucceeded(event -> {
             System.out.println("Opponent returns information");
+            timeSeconds = 30;
             if (task.getValue()) {
                 System.out.println("Opponent returned true");
                 myTurn = true;
@@ -217,6 +225,7 @@ public class GameController {
             System.out.println("Received opponent shoot " + position);
             if (position != null) {
                 Pair<Integer, Integer> finalPosition = position;
+                timeSeconds = 30;
                 Platform.runLater(() -> {
                     var cell = board.getCell(finalPosition.getKey(), finalPosition.getValue());
                     if (cell.isShip()) {
@@ -322,5 +331,51 @@ public class GameController {
         stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
+    }
+    private void timerCountDownThread(){
+        timerLabel.setText("30");  // Initial text
+        System.out.println("start pomiaru");
+
+        // Create a Task to run the countdown
+        Task<Void> task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                while (timeSeconds > 0) {
+                    timeSeconds--;
+                    Platform.runLater(() -> timerLabel.setText(String.valueOf(timeSeconds)));
+                    Thread.sleep(1000);
+                }
+                Platform.runLater(() -> {
+                    timerLabel.setText("koniec czasu");
+                    if(myTurn){
+                        playerTurn.setText("Przegrana");
+                        resetBoardInteraction(opponentBoard);
+                        if(server != null){
+                            DatabaseOperations.increaseScoreInDb("ships", "leaderboard", clientUsername);
+                            server.closeEverything();
+                        }
+                        if(client != null) {
+                            client.closeEverything();
+                        }
+                    }else{
+                        playerTurn.setText("Wygrana");
+                            if(server != null){
+                                DatabaseOperations.increaseScoreInDb("ships", "leaderboard", Main.getUsername());
+                                server.closeEverything();
+                            }
+                            if(client != null){
+                                client.closeEverything();
+                            }
+                    }
+                    backToMenu.setVisible(true);
+                    backToMenu.setDisable(false);
+                });
+                return null;
+            }
+        };
+
+        // Run the task in a separate thread
+        Thread thread = new Thread(task);
+        thread.start();
     }
 }
