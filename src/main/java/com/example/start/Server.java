@@ -18,6 +18,7 @@ public class Server implements GameOperations{
     private boolean gameStatus;
     private final Lock lock = new ReentrantLock();
     private boolean gameAccepted;
+    private static String ipAddress = null;
     public Server(ServerSocket serverSocket, LabelUpdateCallback callback) {
         this.gameAccepted = false;
         this.setServerSocket(serverSocket);
@@ -27,7 +28,8 @@ public class Server implements GameOperations{
 
         try {
             InetAddress localHost = InetAddress.getLocalHost();
-            System.out.println("Server IP: " + localHost.getHostAddress());
+            ipAddress = localHost.getHostAddress();
+            System.out.println("Server IP: " + ipAddress);
         }catch (UnknownHostException e){
             System.out.println("UnknowHost exception");
         }
@@ -78,7 +80,12 @@ public class Server implements GameOperations{
         }).start();
 
     }
-
+    public static void setIP(String ip){
+        ipAddress = ip;
+    }
+    public static String getIpAddress(){
+        return ipAddress;
+    }
     public void sendMessage(String messageToClient){
         if(getSocket().isConnected()){
             try{

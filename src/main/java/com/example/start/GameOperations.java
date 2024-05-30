@@ -147,8 +147,10 @@ public interface GameOperations {
                             Thread.sleep(10);
                         }
                         msg = bufferedReader.readLine();
+                        if (msg.startsWith("username:")){
+                            return msg.split(":")[1];
+                        }
 
-                        return msg;
 
                     } catch (IOException | InterruptedException e) {
                         throw new RuntimeException(e);

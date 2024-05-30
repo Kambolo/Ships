@@ -33,6 +33,7 @@ public class GameController {
     private boolean myTurn;
     private int shipsRemaining;
     private int opponetShipsRemaining;
+    private String clientUsername;
     @FXML
     private Pane pane1;
     @FXML
@@ -90,6 +91,15 @@ public class GameController {
 
     private void startGame(){
         System.out.println("Starting game");
+
+        //server gets client username
+        if(client != null){
+            client.sendMessage("username:"+Main.getUsername());
+        }
+        if(server != null){
+            clientUsername = server.getUsername(server.getSocket(), server.getBufferedReader());
+            System.out.println("client username "+clientUsername);
+        }
 
         board.getBoardArr().stream().flatMap(ArrayList::stream).forEach(cell -> {
             cell.getRectangle().setOnMouseEntered(null);
@@ -159,8 +169,6 @@ public class GameController {
                             server.closeEverything();
                         }
                         if(client != null){
-                            //to get username from a client
-                            client.sendMessage("username:"+Main.getUsername());
                             client.closeEverything();
                         }
                     });
@@ -222,7 +230,7 @@ public class GameController {
                                 this.backToMenu.setVisible(true);
                                 this.backToMenu.setDisable(false);
                                 if(server != null){
-                                    DatabaseOperations.increaseScoreInDb("ships", "leaderboard", client.getUsername(client.getSocket(), client.getBufferedReader()));
+                                    DatabaseOperations.increaseScoreInDb("ships", "leaderboard", clientUsername);
                                     server.closeEverything();
                                 }
                                 if(client != null){

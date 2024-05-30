@@ -34,8 +34,11 @@ public class JoinController {
     @FXML
     public void onButtonClicked(ActionEvent evt) throws IOException {
         try {
-
-            Client client = new Client(new Socket(ipAdd.getText(), Integer.parseInt(port.getText())));
+            String ipadd = ipAdd.getText();
+            if(ipadd == ""){
+                ipadd = "localhost";
+            }
+            Client client = new Client(new Socket(ipadd, Integer.parseInt(port.getText())));
 
             if (client.tryToConnect()) {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("shipsSelect.fxml"));

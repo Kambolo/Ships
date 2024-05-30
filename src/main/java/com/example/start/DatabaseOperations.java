@@ -1,11 +1,16 @@
 package com.example.start;
+import javafx.util.Pair;
+
 import java.sql.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 
 public class DatabaseOperations {
-    static String url = "jdbc:mysql://localhost/";
-    static final String USER = "root";
-    static final String PASSWORD = "";
+    static private String url = "jdbc:mysql://localhost/";
+    static private String urlWithDbName = "jdbc:mysql://localhost/";
+    static private final String USER = "root";
+    static private final String PASSWORD = "";
 
     static private void createDatabaseIfNotExist(String dbName) {
         Connection connection = null;
@@ -16,7 +21,7 @@ public class DatabaseOperations {
 
             preparedStatement = connection.prepareStatement("CREATE DATABASE IF NOT EXISTS " + dbName);
             preparedStatement.executeUpdate();
-            url += dbName;
+            urlWithDbName += dbName;
         } catch (SQLException | ClassNotFoundException e) {
             System.out.println("Error while creating database");
         } finally {
@@ -42,7 +47,7 @@ public class DatabaseOperations {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             // Establish a connection
-            connection = DriverManager.getConnection(url, USER, PASSWORD);
+            connection = DriverManager.getConnection(urlWithDbName, USER, PASSWORD);
 
             // Prepare SQL query to check if the table exists
             String sql = "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = ? AND table_name = ?";
@@ -98,7 +103,7 @@ public class DatabaseOperations {
                 update.setString(1, username);
                 update.executeUpdate();
                 update.close();
-                System.out.println("Zaktualizowano wynik w bazie danych");
+                System.out.println("Score updated");
             }
             else{
                 sql = "INSERT INTO "+tableName+" VALUES(?, 1)";
@@ -106,7 +111,7 @@ public class DatabaseOperations {
                 update.setString(1, username);
                 update.executeUpdate();
                 update.close();
-                System.out.println("Dodano wpis o uzytkowniku do bazy danych");
+                System.out.println("new user was insert into a database");
             }
         }catch(SQLException e){
             System.out.println("Error while increasing score in Database");
@@ -117,6 +122,42 @@ public class DatabaseOperations {
                 }
             }catch (SQLException e){
                 System.out.println("Error while closing preparedStatement");
+            }
+        }
+    }
+
+    static public ObservableList<LeaderboardEntry> getLeaderboard(String dbName, String tableName) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            connection = DriverManager.getConnection(url+dbName, USER, PASSWORD);
+
+            String sql = "SELECT username, score FROM "+tableName+" ORDER BY score DESC LIMIT 11";
+            preparedStatement = connection.prepareStatement(sql);
+            resultSet = preparedStatement.executeQuery();
+
+            ObservableList<LeaderboardEntry> result = FXCollections.observableArrayList();
+
+            while(resultSet.next()){
+                result.add(new LeaderboardEntry(resultSet.getString(1), resultSet.getInt(2)));
+            }
+            return result;
+
+        } catch (SQLException e) {
+            System.out.println("Leaderboard is empty");
+            return null;
+        } catch (ClassNotFoundException e) {
+            return null;
+        }finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
     }
