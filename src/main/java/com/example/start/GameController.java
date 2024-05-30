@@ -55,6 +55,8 @@ public class GameController {
     private Button backToMenu;
     @FXML
     private Label timerLabel;
+    @FXML
+    private Label timeLabel;
 
     @FXML
     public void initialize(Board board, Client client, Server server) {
@@ -68,6 +70,7 @@ public class GameController {
         this.backToMenu.setDisable(true);
         this.timerLabel.setText("");
         timeSeconds = 30;
+        this.timeLabel.setText("");
 
         metricX1.setVisible(false);
         metricX2.setVisible(false);
@@ -334,6 +337,7 @@ public class GameController {
     }
     private void timerCountDownThread(){
         timerLabel.setText("30");  // Initial text
+        timeLabel.setText("Czas");
         System.out.println("start pomiaru");
 
         // Create a Task to run the countdown
