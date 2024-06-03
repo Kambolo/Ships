@@ -1,8 +1,10 @@
 package com.example.start;
 
 import java.io.*;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -16,13 +18,22 @@ public class Server implements GameOperations{
     private boolean gameStatus;
     private final Lock lock = new ReentrantLock();
     private boolean gameAccepted;
-
+    private static String ipAddress = null;
     public Server(ServerSocket serverSocket, LabelUpdateCallback callback) {
         this.gameAccepted = false;
-        this.serverSocket = serverSocket;
+        this.setServerSocket(serverSocket);
         this.callback = callback;
         this.roomAvailable = true;
         this.gameStatus = true;
+
+        try {
+            InetAddress localHost = InetAddress.getLocalHost();
+            ipAddress = localHost.getHostAddress();
+            System.out.println("Server IP: " + ipAddress);
+        }catch (UnknownHostException e){
+            System.out.println("UnknowHost exception");
+        }
+
         new Thread(new Runnable() {
 
             boolean locked;
@@ -69,7 +80,12 @@ public class Server implements GameOperations{
         }).start();
 
     }
-
+    public static void setIP(String ip){
+        ipAddress = ip;
+    }
+    public static String getIpAddress(){
+        return ipAddress;
+    }
     public void sendMessage(String messageToClient){
         if(getSocket().isConnected()){
             try{
@@ -98,8 +114,8 @@ public class Server implements GameOperations{
             if(getSocket() != null){
                 getSocket().close();
             }
-            if(serverSocket != null){
-                serverSocket.close();
+            if(getServerSocket() != null){
+                getServerSocket().close();
             }
         }catch (IOException e){
             e.printStackTrace();
@@ -124,5 +140,13 @@ public class Server implements GameOperations{
 
     public void setBufferedReader(BufferedReader bufferedReader) {
         this.bufferedReader = bufferedReader;
+    }
+
+    public ServerSocket getServerSocket() {
+        return serverSocket;
+    }
+
+    public void setServerSocket(ServerSocket serverSocket) {
+        this.serverSocket = serverSocket;
     }
 }

@@ -134,4 +134,44 @@ public interface GameOperations {
             throw new RuntimeException(e);
         }
     }
+
+    default String getUsername(Socket socket, BufferedReader bufferedReader){
+
+        Callable<String> thread = new Callable<>() {
+            @Override
+            public String call(){
+                String msg = null;
+                while (socket.isConnected()) {
+                    try {
+                        while(!bufferedReader.ready()) {
+                            Thread.sleep(10);
+                        }
+                        msg = bufferedReader.readLine();
+                        if (msg.startsWith("username:")){
+                            return msg.split(":")[1];
+                        }
+
+
+                    } catch (IOException | InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                }
+                return null;
+            }
+        };
+
+        FutureTask<String> result = new FutureTask<>(thread);
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.submit(result);
+        executor.shutdown();
+        System.out.println("Waiting for client username");
+
+        try {
+            return result.get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

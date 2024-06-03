@@ -19,6 +19,8 @@ public class CreateOrJoinController {
     private Button clientButton;
     @FXML
     private Label infoLabel;
+    @FXML
+    private Button leaderboardButton;
 
     private Parent root;
     private Stage stage;
@@ -44,6 +46,17 @@ public class CreateOrJoinController {
     @FXML
     public void onClientButtonClicked(ActionEvent evt) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("join.fxml"));
+        root = loader.load();
+
+        scene = new Scene(root);
+        stage = (Stage) ((Node) evt.getSource()).getScene().getWindow();
+        stage.setResizable(false);
+        stage.setScene(scene);
+        stage.show();
+    }
+    @FXML
+    public void onLeaderboardButtonClicked(ActionEvent evt) throws IOException{
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("leaderboard.fxml"));
         root = loader.load();
 
         scene = new Scene(root);

@@ -18,6 +18,8 @@ public class JoinController {
     @FXML
     private TextField port;
     @FXML
+    private TextField ipAdd;
+    @FXML
     private Label errorLabel;
 
     private Parent root;
@@ -32,8 +34,11 @@ public class JoinController {
     @FXML
     public void onButtonClicked(ActionEvent evt) throws IOException {
         try {
-
-            Client client = new Client(new Socket("localhost", Integer.parseInt(port.getText())));
+            String ipadd = ipAdd.getText();
+            if(ipadd == ""){
+                ipadd = "localhost";
+            }
+            Client client = new Client(new Socket(ipadd, Integer.parseInt(port.getText())));
 
             if (client.tryToConnect()) {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("shipsSelect.fxml"));

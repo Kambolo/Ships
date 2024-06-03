@@ -7,6 +7,8 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -18,7 +20,19 @@ public class StartViewController {
     @FXML
     private Button playButton;
     @FXML
+    private TextField username;
+    @FXML
+    private Label wrongUsernameLabel;
+
+    @FXML
     protected void onButtonClicked(ActionEvent evt) throws IOException {
+        Main.setUsername(username.getText());
+
+        if(Main.getUsername().equals("")){
+            wrongUsernameLabel.setText("Musisz podać nazwę użytkownika!");
+            return;
+        }
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("createOrJoin.fxml"));
         root = loader.load();
 

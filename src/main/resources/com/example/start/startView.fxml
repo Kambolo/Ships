@@ -14,11 +14,12 @@
             <Font name="System Bold Italic" size="72.0" />
          </font>
       </Label>
-      <TextField layoutX="119.0" layoutY="200.0" prefHeight="24.0" prefWidth="311.0" />
+      <TextField fx:id="username" layoutX="119.0" layoutY="200.0" prefHeight="24.0" prefWidth="311.0" />
       <Label layoutX="120.0" layoutY="167.0" text="Podaj swoja nazwe">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
+      <Label fx:id="wrongUsernameLabel" layoutX="120.0" layoutY="239.0" textFill="RED" />
    </children>
 </Pane>
