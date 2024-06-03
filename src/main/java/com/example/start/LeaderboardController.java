@@ -1,6 +1,5 @@
 package com.example.start;
 
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,11 +12,12 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import javafx.util.Pair;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
+/**
+ * Controller class for the Leaderboard view.
+ */
 public class LeaderboardController {
 
     @FXML
@@ -34,9 +34,12 @@ public class LeaderboardController {
 
     private ObservableList<LeaderboardEntry> leaderboardData;
 
+    /**
+     * Initializes the leaderboard view.
+     */
     @FXML
     private void initialize() {
-       leaderboardData = DatabaseOperations.getLeaderboard("ships", "leaderboard");
+        leaderboardData = DatabaseOperations.getLeaderboard("ships", "leaderboard");
 
         // Set up the columns
         usernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
@@ -46,6 +49,12 @@ public class LeaderboardController {
         leaderboard.setItems(leaderboardData);
     }
 
+    /**
+     * Handles the event when the menu button is clicked.
+     *
+     * @param evt the ActionEvent triggered by clicking the menu button
+     * @throws IOException if an I/O error occurs while loading the FXML file
+     */
     @FXML
     private void onMenuButtonClicked(ActionEvent evt) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("createOrJoin.fxml"));

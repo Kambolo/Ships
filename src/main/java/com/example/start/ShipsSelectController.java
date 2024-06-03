@@ -16,10 +16,15 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class ShipsSelectController implements ShipPlacementListener{
+/**
+ * Controller class for the ship selection screen.
+ */
+public class ShipsSelectController implements ShipPlacementListener {
+
     private Parent root;
     private Stage stage;
     private Scene scene;
+
     @FXML
     private Pane pane;
     @FXML
@@ -38,6 +43,7 @@ public class ShipsSelectController implements ShipPlacementListener{
     private Label numberOf2Label;
     @FXML
     private Label numberOf1Label;
+
     private Board board;
     private Client client;
     private Server server;
@@ -51,8 +57,15 @@ public class ShipsSelectController implements ShipPlacementListener{
     @FXML
     private Button confirmButton;
 
+    /**
+     * Initializes the ShipsSelectController.
+     *
+     * @param portNr Port number for the server
+     * @param client Client instance
+     * @param server Server instance
+     */
     @FXML
-    public void initialize(int portNr, Client client, Server server){
+    public void initialize(int portNr, Client client, Server server) {
         System.out.println("initialize");
         this.portNr = portNr;
         this.client = client;
@@ -73,18 +86,26 @@ public class ShipsSelectController implements ShipPlacementListener{
         drawBoard();
     }
 
-    private void drawBoard(){
-        for(ArrayList<Cell> row: board.getBoardArr()){
-            for(Cell cell : row){
+    /**
+     * Draws the game board on the screen.
+     */
+    private void drawBoard() {
+        for (ArrayList<Cell> row : board.getBoardArr()) {
+            for (Cell cell : row) {
                 pane.getChildren().add(cell.getRectangle());
             }
         }
     }
 
+    /**
+     * Called when a ship is placed on the board.
+     *
+     * @param placed true if the ship is successfully placed, false otherwise
+     * @param size   the size of the ship
+     */
     @Override
-    public void onShipPlaced(boolean placed, int size){
-        //System.out.println("Statek o rozmiarze " + size + " został " + (placed ? "umieszczony" : "nie umieszczony"));
-        switch (size){
+    public void onShipPlaced(boolean placed, int size) {
+        switch (size) {
             case 1: {
                 numberOf1.set(numberOf1.get() - 1);
                 numberOf1Label.setText("Dostepne statki: " + numberOf1.get());
@@ -105,35 +126,54 @@ public class ShipsSelectController implements ShipPlacementListener{
                 numberOf4Label.setText("Dostepne statki: " + numberOf4.get());
                 break;
             }
-            default:
         }
     }
 
-    public void putShip4(){
+    /**
+     * Method to put a ship of size 4 on the board.
+     */
+    public void putShip4() {
         board.setPlacementLocked(false);
         board.selectCells(4);
     }
-    public void putShip3(){
+
+    /**
+     * Method to put a ship of size 3 on the board.
+     */
+    public void putShip3() {
         board.setPlacementLocked(false);
         board.selectCells(3);
     }
-    public void putShip2(){
+
+    /**
+     * Method to put a ship of size 2 on the board.
+     */
+    public void putShip2() {
         board.setPlacementLocked(false);
         board.selectCells(2);
     }
-    public void putShip1(){
+
+    /**
+     * Method to put a ship of size 1 on the board.
+     */
+    public void putShip1() {
         board.setPlacementLocked(false);
         board.selectCells(1);
     }
 
-    public void resetBoard(){
+    /**
+     * Resets the board by re-initializing ship counts and drawing a new board.
+     */
+    public void resetBoard() {
         setNumberOfShips();
-
         board = new Board();
         board.setShipPlacementListener(this);
         drawBoard();
     }
 
+    /**
+     * Sets the initial ship counts for each size.
+     */
     private void setNumberOfShips() {
         numberOf4.set(1);
         numberOf3.set(2);
@@ -146,6 +186,12 @@ public class ShipsSelectController implements ShipPlacementListener{
         numberOf1Label.setText("Dostepne statki: " + numberOf1.get());
     }
 
+    /**
+     * Starts the game when the confirm button is clicked.
+     *
+     * @param evt Action event
+     * @throws IOException Input/output exception
+     */
     @FXML
     public void startGame(ActionEvent evt) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("game.fxml"));
@@ -162,22 +208,4 @@ public class ShipsSelectController implements ShipPlacementListener{
         stage.setScene(scene);
         stage.show();
     }
-
-//    @Override
-//    public void updateCells(String cells) {
-//        if(cells != null){
-//            ArrayList<ArrayList<Cell>> arrayOfCells = board.getBoardArr();
-//
-//            String[] placement = cells.split(",");
-//
-//            int row=0;
-//            int col =0;
-//
-//            for(int i=0; i< placement.length; i++){
-//                row = placement[i].charAt(0) - '0';
-//                col = placement[i].charAt(1) - '0';
-//                arrayOfCells.get(row).get(col).setPicked(true);
-//            }
-//        }
-//    }
 }

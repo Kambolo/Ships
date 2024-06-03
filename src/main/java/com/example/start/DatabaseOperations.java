@@ -1,17 +1,23 @@
 package com.example.start;
-import javafx.util.Pair;
 
 import java.sql.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-
+/**
+ * A class that handles database operations related to game scoring and leaderboard management.
+ */
 public class DatabaseOperations {
     static private String url = "jdbc:mysql://localhost/";
     static private String urlWithDbName = "jdbc:mysql://localhost/";
     static private final String USER = "root";
     static private final String PASSWORD = "";
 
+    /**
+     * Creates a database if it does not already exist.
+     *
+     * @param dbName the name of the database to create
+     */
     static private void createDatabaseIfNotExist(String dbName) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -33,10 +39,19 @@ public class DatabaseOperations {
                     connection.close();
                 }
             } catch (SQLException e) {
-                System.out.println("Error while creating database");
+                System.out.println("Error while closing resources");
             }
         }
     }
+
+    /**
+     * Increases the score of a user in the specified table within the specified database.
+     * If the table does not exist, it will be created.
+     *
+     * @param dbName the name of the database
+     * @param tableName the name of the table
+     * @param username the username of the player whose score needs to be increased
+     */
     static public void increaseScoreInDb(String dbName, String tableName, String username) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -46,16 +61,13 @@ public class DatabaseOperations {
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            // Establish a connection
             connection = DriverManager.getConnection(urlWithDbName, USER, PASSWORD);
 
-            // Prepare SQL query to check if the table exists
             String sql = "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = ? AND table_name = ?";
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, connection.getCatalog()); // Set the current database name
+            preparedStatement.setString(1, connection.getCatalog());
             preparedStatement.setString(2, tableName);
 
-            // Execute the query
             resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 int count = resultSet.getInt(1);
@@ -90,42 +102,56 @@ public class DatabaseOperations {
         }
     }
 
-    static private void updateScore(String username, String tableName, Connection connection){
+    /**
+     * Updates the score of a user in the specified table within the specified database.
+     * If the user does not exist in the table, they will be inserted with a score of 1.
+     *
+     * @param username the username of the player whose score needs to be updated
+     * @param tableName the name of the table
+     * @param connection the connection to the database
+     */
+    static private void updateScore(String username, String tableName, Connection connection) {
         PreparedStatement preparedStatement = null;
-        try{
+        try {
             String sql = "SELECT * FROM " + tableName + " WHERE username = ?";
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, username);
             ResultSet resultSet = preparedStatement.executeQuery();
-            if(resultSet.next()){
-                sql = "UPDATE "+ tableName +" SET score = score + 1 WHERE username = ?";
+            if (resultSet.next()) {
+                sql = "UPDATE " + tableName + " SET score = score + 1 WHERE username = ?";
                 PreparedStatement update = connection.prepareStatement(sql);
                 update.setString(1, username);
                 update.executeUpdate();
                 update.close();
                 System.out.println("Score updated");
-            }
-            else{
-                sql = "INSERT INTO "+tableName+" VALUES(?, 1)";
+            } else {
+                sql = "INSERT INTO " + tableName + " VALUES(?, 1)";
                 PreparedStatement update = connection.prepareStatement(sql);
                 update.setString(1, username);
                 update.executeUpdate();
                 update.close();
-                System.out.println("new user was insert into a database");
+                System.out.println("New user inserted into the database");
             }
-        }catch(SQLException e){
-            System.out.println("Error while increasing score in Database");
-        }finally {
-            try{
-                if(preparedStatement != null) {
+        } catch (SQLException e) {
+            System.out.println("Error while increasing score in the database");
+        } finally {
+            try {
+                if (preparedStatement != null) {
                     preparedStatement.close();
                 }
-            }catch (SQLException e){
+            } catch (SQLException e) {
                 System.out.println("Error while closing preparedStatement");
             }
         }
     }
 
+    /**
+     * Retrieves the leaderboard from the specified table within the specified database.
+     *
+     * @param dbName the name of the database
+     * @param tableName the name of the table
+     * @return an observable list of leaderboard entries
+     */
     static public ObservableList<LeaderboardEntry> getLeaderboard(String dbName, String tableName) {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -133,15 +159,15 @@ public class DatabaseOperations {
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            connection = DriverManager.getConnection(url+dbName, USER, PASSWORD);
+            connection = DriverManager.getConnection(url + dbName, USER, PASSWORD);
 
-            String sql = "SELECT username, score FROM "+tableName+" ORDER BY score DESC LIMIT 11";
+            String sql = "SELECT username, score FROM " + tableName + " ORDER BY score DESC LIMIT 11";
             preparedStatement = connection.prepareStatement(sql);
             resultSet = preparedStatement.executeQuery();
 
             ObservableList<LeaderboardEntry> result = FXCollections.observableArrayList();
 
-            while(resultSet.next()){
+            while (resultSet.next()) {
                 result.add(new LeaderboardEntry(resultSet.getString(1), resultSet.getInt(2)));
             }
             return result;
@@ -151,7 +177,7 @@ public class DatabaseOperations {
             return null;
         } catch (ClassNotFoundException e) {
             return null;
-        }finally {
+        } finally {
             try {
                 if (resultSet != null) resultSet.close();
                 if (preparedStatement != null) preparedStatement.close();

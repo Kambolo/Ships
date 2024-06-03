@@ -7,7 +7,18 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.concurrent.*;
 
+/**
+ * Interface defining common game operations.
+ */
 public interface GameOperations {
+
+    /**
+     * Confirms the game readiness.
+     *
+     * @param socket         the socket
+     * @param bufferedReader the buffered reader
+     * @return true if the game is ready to start, false otherwise
+     */
     default boolean confirmGame(Socket socket, BufferedReader bufferedReader){
 
         Callable<Boolean> thread = new Callable<>() {
@@ -44,6 +55,13 @@ public interface GameOperations {
         }
     }
 
+    /**
+     * Receives a message from the opponent.
+     *
+     * @param socket         the socket
+     * @param bufferedReader the buffered reader
+     * @return the pair representing the position of the opponent's move
+     */
     default Pair<Integer, Integer> receiveMessage(Socket socket, BufferedReader bufferedReader) {
 
         Callable<String> thread = new Callable<>() {
@@ -85,7 +103,7 @@ public interface GameOperations {
                 int y = Integer.parseInt(parts[2]);
 
                 Pair<Integer, Integer> position = new Pair<>(y, x);
-                System.out.println("Przeciwnik wybrał komórkę: (" + x + ", " + y + ")");
+                System.out.println("Opponent selected cell: (" + x + ", " + y + ")");
 
                 return position;
             }
@@ -96,6 +114,13 @@ public interface GameOperations {
         }
     }
 
+    /**
+     * Gets the response from the opponent.
+     *
+     * @param socket         the socket
+     * @param bufferedReader the buffered reader
+     * @return true if the opponent's move is a hit, false otherwise
+     */
     default boolean getResponse(Socket socket, BufferedReader bufferedReader){
 
         Callable<Boolean> thread = new Callable<>() {
@@ -135,6 +160,13 @@ public interface GameOperations {
         }
     }
 
+    /**
+     * Gets the username of the opponent.
+     *
+     * @param socket         the socket
+     * @param bufferedReader the buffered reader
+     * @return the opponent's username
+     */
     default String getUsername(Socket socket, BufferedReader bufferedReader){
 
         Callable<String> thread = new Callable<>() {

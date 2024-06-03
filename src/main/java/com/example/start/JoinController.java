@@ -14,6 +14,9 @@ import java.io.IOException;
 import java.net.ConnectException;
 import java.net.Socket;
 
+/**
+ * Controller for joining a game room.
+ */
 public class JoinController {
     @FXML
     private TextField port;
@@ -26,11 +29,20 @@ public class JoinController {
     private Stage stage;
     private Scene scene;
 
+    /**
+     * Initializes the JoinController.
+     */
     @FXML
     private void initialize() {
         errorLabel.setVisible(false);
     }
 
+    /**
+     * Handles the button click event.
+     *
+     * @param evt the ActionEvent
+     * @throws IOException if an I/O error occurs
+     */
     @FXML
     public void onButtonClicked(ActionEvent evt) throws IOException {
         try {
@@ -54,16 +66,23 @@ public class JoinController {
                 stage.setOnCloseRequest(e -> client.closeEverything());
                 stage.show();
             } else {
-                backToMenu(evt, "Pokoj jest zajety!");
+                backToMenu(evt, "Pokój jest zajęty!");
             }
         } catch (ConnectException e) {
-            backToMenu(evt, "Pokoj nie istnieje!");
+            backToMenu(evt, "Pokój nie istnieje!");
         } catch (NumberFormatException e){
             errorLabel.setText("Niedozwolony numer portu!");
             errorLabel.setVisible(true);
         }
     }
 
+    /**
+     * Navigates back to the main menu.
+     *
+     * @param evt the ActionEvent
+     * @param msg the message to display
+     * @throws IOException if an I/O error occurs
+     */
     private void backToMenu(ActionEvent evt, String msg) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("createOrJoin.fxml"));
         root = loader.load();

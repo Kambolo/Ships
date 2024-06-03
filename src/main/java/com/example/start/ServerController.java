@@ -13,7 +13,10 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class ServerController implements LabelUpdateCallback{
+/**
+ * Controller class for the server view.
+ */
+public class ServerController implements LabelUpdateCallback {
     @FXML
     private Pane pane;
     @FXML
@@ -25,15 +28,26 @@ public class ServerController implements LabelUpdateCallback{
     private Stage stage;
     private Scene scene;
 
-
+    /**
+     * Initializes the server controller with the specified port number, stage, and server.
+     *
+     * @param portNr the port number
+     * @param stage  the stage
+     * @param server the server
+     */
     @FXML
-    public void initialize(int portNr, Stage stage, Server server){
+    public void initialize(int portNr, Stage stage, Server server) {
         this.portNr = portNr;
         this.stage = stage;
         this.server = server;
         clientConnectionStatus.setText("Oczekiwanie na\nprzeciwnika");
     }
 
+    /**
+     * Updates the label with the new text.
+     *
+     * @param newText the new text to display
+     */
     @Override
     public void updateLabel(String newText) {
         Platform.runLater(() -> clientConnectionStatus.setText(newText));
@@ -54,5 +68,4 @@ public class ServerController implements LabelUpdateCallback{
             }
         });
     }
-
 }

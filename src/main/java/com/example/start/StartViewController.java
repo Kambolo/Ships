@@ -13,10 +13,15 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 
+/**
+ * Controller class for the start view.
+ */
 public class StartViewController {
+
     private Parent root;
     private Stage stage;
     private Scene scene;
+
     @FXML
     private Button playButton;
     @FXML
@@ -24,6 +29,12 @@ public class StartViewController {
     @FXML
     private Label wrongUsernameLabel;
 
+    /**
+     * Handles button click event.
+     *
+     * @param evt Action event
+     * @throws IOException If an I/O error occurs
+     */
     @FXML
     protected void onButtonClicked(ActionEvent evt) throws IOException {
         Main.setUsername(username.getText());
