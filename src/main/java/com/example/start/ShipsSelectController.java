@@ -202,7 +202,7 @@ public class ShipsSelectController implements ShipPlacementListener {
 
         scene = new Scene(root);
         stage = (Stage) ((Node) evt.getSource()).getScene().getWindow();
-        stage.setWidth(1000);
+        stage.setWidth(1050);
         stage.setHeight(600);
         stage.setResizable(false);
         stage.setScene(scene);

@@ -32,6 +32,7 @@ public class GameController {
     private Server server;
     private Client client;
     private boolean myTurn;
+    private boolean end;
     private int shipsRemaining;
     private int opponentShipsRemaining;
     private int timeSeconds;
@@ -79,6 +80,7 @@ public class GameController {
         this.timerLabel.setText("");
         timeSeconds = 30;
         this.timeLabel.setText("");
+        this.end = false;
 
         metricX1.setVisible(false);
         metricX2.setVisible(false);
@@ -200,8 +202,10 @@ public class GameController {
                 opponentShipsRemaining--;
                 if(opponentShipsRemaining == 0){
                     resetBoardInteraction(opponentBoard);
+                    end = true;
                     Platform.runLater(()->{
                         playerTurn.setText("Wygrana!");
+                        timerLabel.setText("");
                         this.backToMenu.setVisible(true);
                         this.backToMenu.setDisable(false);
                         if(server != null){
@@ -274,7 +278,9 @@ public class GameController {
                         sendFeedback(cell.isShip());
                         if(shipsRemaining == 0){
                             resetBoardInteraction(opponentBoard);
+                            end = true;
                             Platform.runLater(()->{
+                               timerLabel.setText("");
                                 playerTurn.setText("Przegrana!");
                                 this.backToMenu.setVisible(true);
                                 this.backToMenu.setDisable(false);
@@ -400,7 +406,7 @@ public class GameController {
     /**
      * Initializes and starts the countdown timer.
      */
-    private void timerCountDownThread(){
+    private void timerCountDownThread() {
         timerLabel.setText("30");  // Initial text
         timeLabel.setText("Czas");
         System.out.println("start pomiaru");
@@ -409,36 +415,38 @@ public class GameController {
         Task<Void> task = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                while (timeSeconds > 0) {
+                while (timeSeconds > 0 && !end) {
                     timeSeconds--;
                     Platform.runLater(() -> timerLabel.setText(String.valueOf(timeSeconds)));
                     Thread.sleep(1000);
                 }
-                Platform.runLater(() -> {
-                    timerLabel.setText("koniec czasu");
-                    if(myTurn){
-                        playerTurn.setText("Przegrana");
-                        resetBoardInteraction(opponentBoard);
-                        if(server != null){
-                            DatabaseOperations.increaseScoreInDb("ships", "leaderboard", clientUsername);
-                            server.closeEverything();
-                        }
-                        if(client != null) {
-                            client.closeEverything();
-                        }
-                    }else{
-                        playerTurn.setText("Wygrana");
-                            if(server != null){
+                if (!end) {
+                    Platform.runLater(() -> {
+                        timerLabel.setText("koniec czasu");
+                        if (myTurn) {
+                            playerTurn.setText("Przegrana");
+                            resetBoardInteraction(opponentBoard);
+                            if (server != null) {
+                                DatabaseOperations.increaseScoreInDb("ships", "leaderboard", clientUsername);
+                                server.closeEverything();
+                            }
+                            if (client != null) {
+                                client.closeEverything();
+                            }
+                        } else {
+                            playerTurn.setText("Wygrana");
+                            if (server != null) {
                                 DatabaseOperations.increaseScoreInDb("ships", "leaderboard", Main.getUsername());
                                 server.closeEverything();
                             }
-                            if(client != null){
+                            if (client != null) {
                                 client.closeEverything();
                             }
-                    }
-                    backToMenu.setVisible(true);
-                    backToMenu.setDisable(false);
-                });
+                        }
+                        backToMenu.setVisible(true);
+                        backToMenu.setDisable(false);
+                    });
+                }
                 return null;
             }
         };
