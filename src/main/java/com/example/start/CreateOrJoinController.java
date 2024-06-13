@@ -92,8 +92,6 @@ public class CreateOrJoinController {
 
         scene = new Scene(root);
         stage = (Stage) ((Node) evt.getSource()).getScene().getWindow();
-        stage.setHeight(430);
-        stage.setWidth(600);
         stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
