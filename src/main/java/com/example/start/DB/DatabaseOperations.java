@@ -1,6 +1,8 @@
-package com.example.start;
+package com.example.start.DB;
 
 import java.sql.*;
+
+import com.example.start.LeaderboardEntry;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 

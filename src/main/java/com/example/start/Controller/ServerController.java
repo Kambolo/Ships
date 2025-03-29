@@ -1,7 +1,9 @@
-package com.example.start;
+package com.example.start.Controller;
 
+import com.example.start.Board.Board;
+import com.example.start.LabelUpdateCallback;
+import com.example.start.Server.Server;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,7 +13,6 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * Controller class for the server view.

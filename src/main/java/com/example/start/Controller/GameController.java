@@ -1,5 +1,11 @@
-package com.example.start;
+package com.example.start.Controller;
 
+import com.example.start.Board.Board;
+import com.example.start.Board.Cell;
+import com.example.start.Client.Client;
+import com.example.start.DB.DatabaseOperations;
+import com.example.start.Main;
+import com.example.start.Server.Server;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -118,7 +124,7 @@ public class GameController {
 
         //server gets client username
         if(client != null){
-            client.sendMessage("username:"+Main.getUsername());
+            client.sendMessage("username:"+ Main.getUsername());
         }
         if(server != null){
             clientUsername = server.getUsername(server.getSocket(), server.getBufferedReader());

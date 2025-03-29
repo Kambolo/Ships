@@ -1,5 +1,7 @@
-package com.example.start;
+package com.example.start.Controller;
 
+import com.example.start.DB.DatabaseOperations;
+import com.example.start.LeaderboardEntry;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

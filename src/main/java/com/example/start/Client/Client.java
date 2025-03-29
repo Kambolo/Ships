@@ -1,4 +1,6 @@
-package com.example.start;
+package com.example.start.Client;
+
+import com.example.start.GameOperations;
 
 import java.io.*;
 import java.net.Socket;

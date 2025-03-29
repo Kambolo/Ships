@@ -1,5 +1,6 @@
-package com.example.start;
+package com.example.start.Board;
 
+import com.example.start.ShipPlacementListener;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Pair;
@@ -24,7 +25,7 @@ public class Board {
     /**
      * Initializes the game board with cells.
      */
-    Board(){
+    public Board(){
         int rows = WIDTH/CELL_SIZE;
         int cols = HEIGHT/CELL_SIZE;
 

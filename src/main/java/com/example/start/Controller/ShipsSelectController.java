@@ -1,5 +1,10 @@
-package com.example.start;
+package com.example.start.Controller;
 
+import com.example.start.Board.Board;
+import com.example.start.Board.Cell;
+import com.example.start.Client.Client;
+import com.example.start.Server.Server;
+import com.example.start.ShipPlacementListener;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.ActionEvent;

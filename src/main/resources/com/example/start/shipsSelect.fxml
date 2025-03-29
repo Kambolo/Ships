@@ -5,7 +5,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.start.ShipsSelectController">
+<Pane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.start.Controller.ShipsSelectController">
    <children>
       <Button fx:id="add4" layoutX="519.0" layoutY="108.0" mnemonicParsing="false" onAction="#putShip4" text="Dodaj 4" />
       <Button fx:id="add3" layoutX="519.0" layoutY="150.0" mnemonicParsing="false" onAction="#putShip3" text="Dodaj 3" />

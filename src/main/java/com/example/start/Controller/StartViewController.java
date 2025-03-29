@@ -1,5 +1,6 @@
-package com.example.start;
+package com.example.start.Controller;
 
+import com.example.start.Main;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;

@@ -1,4 +1,4 @@
-package com.example.start;
+package com.example.start.Board;
 
 import javafx.scene.shape.Rectangle;
 import javafx.util.Pair;

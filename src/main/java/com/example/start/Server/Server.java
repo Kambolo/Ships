@@ -1,4 +1,7 @@
-package com.example.start;
+package com.example.start.Server;
+
+import com.example.start.GameOperations;
+import com.example.start.LabelUpdateCallback;
 
 import java.io.*;
 import java.net.InetAddress;
